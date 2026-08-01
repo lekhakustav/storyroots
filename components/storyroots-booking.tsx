@@ -19,10 +19,13 @@ type InterestFormValues = { email: string };
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
 const storyMoments = [
-  'Keep every voice close.',
-  'We guide every conversation.',
-  'Memories become their biography.',
-  'Audiobook. Their real voice.',
+  { headline: 'Keep every voice close.', formats: [] },
+  { headline: 'We guide every conversation.', formats: [] },
+  { headline: 'Memories become their biography.', formats: [] },
+  {
+    headline: 'Made to hold. Made to hear.',
+    formats: ['Hardcover novel', 'Short storybook', 'Diary-style keepsake', 'Audiobook'],
+  },
 ] as const;
 
 function storyMomentFor(progress: number) {
@@ -94,7 +97,7 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
       transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
     >
       <div className="interest-background" aria-hidden="true">
-        <Image src={storyRootsDawn} alt="" fill sizes="100vw" quality={95} placeholder="blur" priority />
+        <Image src={storyRootsDawn} alt="" fill sizes="100vw" quality={95} placeholder="blur" priority unoptimized />
       </div>
       <div className="interest-shade" aria-hidden="true" />
 
@@ -217,6 +220,7 @@ export function StoryRootsSite() {
                 quality={95}
                 placeholder="blur"
                 priority
+                unoptimized
               />
             </motion.div>
           </motion.div>
@@ -238,15 +242,21 @@ export function StoryRootsSite() {
             transition={{ delay: revealDelay + 0.25, duration: shouldReduceMotion ? 0 : 1.15, ease: easeOut }}
           >
             <AnimatePresence mode="sync" initial={false}>
-              <motion.h1
-                key={storyMoments[activeMoment]}
+              <motion.div
+                className="cinematic-moment"
+                key={storyMoments[activeMoment].headline}
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 28, filter: 'blur(9px)' }}
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 exit={shouldReduceMotion ? undefined : { opacity: 0, y: -22, filter: 'blur(7px)' }}
                 transition={{ duration: shouldReduceMotion ? 0 : 0.58, ease: easeOut }}
               >
-                {storyMoments[activeMoment]}
-              </motion.h1>
+                <h1>{storyMoments[activeMoment].headline}</h1>
+                {storyMoments[activeMoment].formats.length > 0 ? (
+                  <ul className="cinematic-formats" aria-label="Available StoryRoots formats">
+                    {storyMoments[activeMoment].formats.map((format) => <li key={format}>{format}</li>)}
+                  </ul>
+                ) : null}
+              </motion.div>
             </AnimatePresence>
           </motion.div>
 

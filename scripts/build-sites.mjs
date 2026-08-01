@@ -23,6 +23,11 @@ await cp(resolve(root, 'worker', 'sites-entry.mjs'), resolve(serverDir, 'index.j
 // remove the duplicate source image from the deploy bundle.
 await unlink(resolve(clientDir, 'images', 'storyroots-himalayan-dawn.png')).catch(() => {});
 
+const indexHtml = await readFile(resolve(clientDir, 'index.html'), 'utf8');
+if (indexHtml.includes('/_next/image?')) {
+  throw new Error('The static StoryRoots package still depends on the unavailable Next image optimizer.');
+}
+
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
