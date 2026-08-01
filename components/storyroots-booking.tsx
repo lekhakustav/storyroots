@@ -43,9 +43,9 @@ function BrandMark() {
         className="cinematic-brand-logo"
         src={storyRootsLogo}
         alt=""
-        width={44}
-        height={47}
-        sizes="44px"
+        width={56}
+        height={54}
+        sizes="56px"
         priority
         unoptimized
         aria-hidden="true"

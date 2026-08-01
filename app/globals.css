@@ -203,10 +203,10 @@ h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 500; letter-spa
 }
 
 .cinematic-brand-logo {
-  width: 44px;
-  height: auto;
+  width: 56px;
+  height: 54px;
   flex: 0 0 auto;
-  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, .28));
+  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, .32));
 }
 
 .cinematic-copy {
@@ -561,7 +561,8 @@ body:has(.interest-experience) {
   }
 
   .cinematic-brand-logo {
-    width: 38px;
+    width: 48px;
+    height: 46px;
   }
 
   .cinematic-copy {
