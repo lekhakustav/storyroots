@@ -1,0 +1,4 @@
+import { currentUser, bad, guardRateLimit, ok } from '@/lib/api';
+import { generateChapter, getProject } from '@/lib/store';
+
+export async function POST(_: Request, context: { params: Promise<{ projectId: string }> }) { const user = await currentUser(); if (!guardRateLimit(user.id, 'chapter', 6)) return bad('Please wait a moment before generating another chapter.', 429); const { projectId } = await context.params; const project = getProject(user, projectId); if (!project) return bad('Project not found.', 404); if (!project.timelineEvents.some((event) => event.confirmationStatus === 'confirmed')) return bad('Confirm at least one timeline event first.'); const chapter = generateChapter(user, projectId); return chapter ? ok({ chapter, provider: process.env.AI_PROVIDER || 'mock' }, { status: 201 }) : bad('Could not generate the chapter.'); }

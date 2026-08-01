@@ -1,0 +1,4 @@
+import { currentUser, bad, ok } from '@/lib/api';
+import { getExport } from '@/lib/store';
+
+export async function GET(request: Request, context: { params: Promise<{ exportId: string }> }) { const found = getExport(await currentUser(), (await context.params).exportId); if (!found) return bad('Export not found.', 404); if (new URL(request.url).searchParams.get('download') === '1') { const base64 = (found.job as typeof found.job & { pdfBase64?: string }).pdfBase64; if (!base64) return bad('Export file is not available.', 404); return new Response(Buffer.from(base64, 'base64'), { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${found.project.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.pdf"`, 'Cache-Control': 'private, max-age=0, no-store' } }); } return ok({ export: found.job, downloadUrl: `/api/exports/${found.job.id}?download=1` }); }

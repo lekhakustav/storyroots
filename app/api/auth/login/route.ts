@@ -1,0 +1,3 @@
+import { NextResponse } from 'next/server';
+import { DEMO_USER, encodeUser } from '@/lib/auth';
+export async function POST(request: Request) { const body = await request.json().catch(() => null); if (!body?.email || !body?.password) return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 }); const user = { ...DEMO_USER, email: String(body.email) }; const response = NextResponse.json({ user }); response.cookies.set('keepsake_user', encodeUser(user), { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 24 * 30, path: '/' }); return response; }

@@ -1,0 +1,4 @@
+import { currentUser, bad, guardRateLimit, ok } from '@/lib/api';
+import { listProjects, transcribe } from '@/lib/store';
+
+export async function POST(_: Request, context: { params: Promise<{ recordingId: string }> }) { const user = await currentUser(); if (!guardRateLimit(user.id, 'transcribe', 10)) return bad('Please wait before transcribing again.', 429); const { recordingId } = await context.params; const owns = listProjects(user).some((project) => project.interviews.some((interview) => interview.recordings.some((recording) => recording.id === recordingId))); if (!owns) return bad('Recording not found.', 404); const transcript = transcribe(user, recordingId); return transcript ? ok({ job: { id: `job_${recordingId}`, status: 'completed' }, transcript, provider: process.env.TRANSCRIPTION_PROVIDER || 'mock' }) : bad('Transcription failed.', 500); }

@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+.env
+.env.local
+.env.*.local
+.vercel
+.data
+playwright-report
+test-results
+coverage
+*.log
+*.tsbuildinfo

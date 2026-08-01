@@ -1,0 +1,2 @@
+-- Development seed is created through the local demo mode when no Supabase credentials are present.
+-- For a linked Supabase project, create a user through Auth first, then insert a project using that user's id.

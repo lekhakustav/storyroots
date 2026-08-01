@@ -1,0 +1,12 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+
+export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
+  const router = useRouter(); const [fullName, setFullName] = useState(''); const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
+  async function submit(event: React.FormEvent) { event.preventDefault(); setBusy(true); setError(''); const response = await fetch(`/api/auth/${mode}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ fullName, email, password }) }); const body = await response.json(); if (!response.ok) { setError(body.error ?? 'Something went wrong.'); setBusy(false); return; } router.push('/dashboard'); router.refresh(); }
+  return <div className="auth-page"><div className="auth-card"><Link className="wordmark" href="/"><span className="wordmark-mark">K</span>Keepsake</Link><h1>{mode === 'login' ? 'Welcome back.' : 'Start a keepsake.'}</h1><p className="muted">{mode === 'login' ? 'Pick up where your family story left off.' : 'Create a calm place for the memories your family wants to keep.'}</p><form className="form-stack" onSubmit={submit} style={{ marginTop: 26 }}>{mode === 'signup' && <div className="field"><label htmlFor="fullName">Your name</label><input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Sirish Sharma" required /></div>}<div className="field"><label htmlFor="email">Email</label><input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required /></div><div className="field"><label htmlFor="password">Password</label><input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" minLength={6} required /></div>{error && <div className="error-box">{error}</div>}<button className="button primary" disabled={busy}>{busy ? 'One moment…' : mode === 'login' ? 'Log in' : 'Create account'} <ArrowRight size={17} /></button></form><p className="muted" style={{ marginTop: 24, fontSize: 14 }}>{mode === 'login' ? <>New to Keepsake? <Link href="/signup"><u>Create an account</u></Link></> : <>Already have an account? <Link href="/login"><u>Log in</u></Link></>}</p></div></div>;
+}
