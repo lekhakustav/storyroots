@@ -11,6 +11,6 @@ Updated: 2026-08-01
 - [x] PDF: server-side pdf-lib export containing approved chapters only.
 - [ ] Supabase migration applied to a linked project: pending human/project credentials.
 - [ ] Vercel production deployment: pending human/Vercel authentication.
-- [ ] Playwright browser pass: next after dependency install and local server start.
+- [x] Playwright browser pass: 4 tests pass on desktop and mobile Chromium; API smoke pass also green.
 
 The local milestone is labelled mock mode whenever no provider credentials are configured.
