@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test';
 
 test('visitor can start StoryRoots with only an email', async ({ page }) => {
+  await page.route('**/api/storyroots-interest', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, notificationSent: true, developmentFallback: false }),
+    });
+  });
+
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Keep every voice close.' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'I want to try', exact: true })).toBeVisible();
@@ -62,4 +70,29 @@ test('scrolling reveals the StoryRoots story and temporarily docks the action ri
   const returnedBox = await action.boundingBox();
   expect(returnedBox).not.toBeNull();
   expect(Math.abs((returnedBox!.x + returnedBox!.width / 2) - (await page.evaluate(() => innerWidth / 2)))).toBeLessThan(4);
+});
+
+test('background and keepsake formats stay inside the compact scroll story', async ({ page }) => {
+  await page.goto('/');
+
+  const background = page.locator('.cinematic-image img');
+  await expect(background).toBeVisible();
+  await expect.poll(() => background.evaluate((image) => {
+    const element = image as HTMLImageElement;
+    return element.complete && element.naturalWidth > 0;
+  })).toBe(true);
+  expect(await background.getAttribute('src')).toContain('/_next/static/media/');
+
+  const storyViewportRatio = await page.evaluate(() => {
+    const story = document.querySelector('.cinematic-scroll-story');
+    return story ? story.getBoundingClientRect().height / window.innerHeight : 0;
+  });
+  expect(storyViewportRatio).toBeLessThanOrEqual(3.7);
+
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect(page.getByRole('heading', { name: 'Made to hold. Made to hear.' })).toBeVisible();
+
+  for (const format of ['Hardcover novel', 'Short storybook', 'Diary-style keepsake', 'Audiobook']) {
+    await expect(page.getByText(format, { exact: true })).toBeVisible();
+  }
 });
