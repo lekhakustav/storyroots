@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import storyRootsDawn from '@/public/images/storyroots-himalayan-dawn.png';
+import storyRootsLogo from '@/public/images/storyroots-tree-logo.png';
 
 type InterestFormValues = { email: string };
 
@@ -36,7 +37,22 @@ function storyMomentFor(progress: number) {
 }
 
 function BrandMark() {
-  return <span className="cinematic-brand" aria-label="StoryRoots">StoryRoots</span>;
+  return (
+    <span className="cinematic-brand" aria-label="StoryRoots">
+      <Image
+        className="cinematic-brand-logo"
+        src={storyRootsLogo}
+        alt=""
+        width={44}
+        height={47}
+        sizes="44px"
+        priority
+        unoptimized
+        aria-hidden="true"
+      />
+      <span>StoryRoots</span>
+    </span>
+  );
 }
 
 function InterestFlow({ onClose }: { onClose: () => void }) {

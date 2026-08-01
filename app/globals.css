@@ -189,12 +189,24 @@ h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 500; letter-spa
 
 .cinematic-brand {
   color: rgba(255, 255, 255, .96);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
   font-family: 'DM Sans', Arial, sans-serif;
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -.04em;
   line-height: 1;
   text-shadow: 0 2px 18px rgba(0, 0, 0, .28);
+  animation: cinematic-brand-float 5.5s ease-in-out 2.5s infinite;
+  will-change: transform;
+}
+
+.cinematic-brand-logo {
+  width: 44px;
+  height: auto;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, .28));
 }
 
 .cinematic-copy {
@@ -522,6 +534,11 @@ body:has(.interest-experience) {
   to { transform: scale(1.055) translate3d(-.6%, -.35%, 0); }
 }
 
+@keyframes cinematic-brand-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -4px, 0); }
+}
+
 @media (max-width: 700px) {
   .cinematic-image,
   .interest-background {
@@ -540,6 +557,11 @@ body:has(.interest-experience) {
 
   .cinematic-brand {
     font-size: 16px;
+    gap: 1px;
+  }
+
+  .cinematic-brand-logo {
+    width: 38px;
   }
 
   .cinematic-copy {
