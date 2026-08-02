@@ -226,6 +226,8 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [developmentFallback, setDevelopmentFallback] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const [storageConnected, setStorageConnected] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<InterestFormValues>({ mode: 'onSubmit' });
 
@@ -255,6 +257,8 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
 
       if (!response.ok) throw new Error(data?.error || 'Please try again.');
 
+      setAlreadyRegistered(Boolean(data?.alreadyRegistered));
+      setStorageConnected(Boolean(data?.storageConnected));
       setDevelopmentFallback(Boolean(data?.developmentFallback));
       setPage(2);
     } catch (error) {
@@ -336,8 +340,8 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
             transition={transition}
           >
             <span className="success-mark" aria-hidden="true"><Check size={26} strokeWidth={1.8} /></span>
-            <h1 ref={headingRef} tabIndex={-1}>You’re on the list.</h1>
-            <p>{developmentFallback ? 'Preview only.' : 'We’ll be in touch.'}</p>
+            <h1 ref={headingRef} tabIndex={-1}>{alreadyRegistered ? 'That email is already saved.' : 'You’re on the list.'}</h1>
+            <p>{alreadyRegistered ? 'We already have this address for StoryRoots.' : storageConnected ? 'We’ll be in touch.' : developmentFallback ? 'Preview only.' : 'We’ll be in touch.'}</p>
             <button className="cinematic-primary-button form-button" type="button" onClick={onClose}>
               Return <ArrowRight size={18} strokeWidth={1.8} />
             </button>

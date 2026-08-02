@@ -5,7 +5,7 @@ test('visitor can start StoryRoots with only an email', async ({ page }) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({ ok: true, notificationSent: true, developmentFallback: false }),
+      body: JSON.stringify({ ok: true, notificationSent: true, developmentFallback: false, storageConnected: true }),
     });
   });
 
@@ -28,6 +28,23 @@ test('visitor can start StoryRoots with only an email', async ({ page }) => {
   await page.getByLabel('Email').fill('anisha@example.com');
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'You’re on the list.' })).toBeVisible();
+});
+
+test('existing email gets a clear already-saved message', async ({ page }) => {
+  await page.route('**/api/storyroots-interest', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, alreadyRegistered: true, storageConnected: true }),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'I want to try', exact: true }).click();
+  await page.getByLabel('Email').fill('already@example.com');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'That email is already saved.' })).toBeVisible();
+  await expect(page.getByText('We already have this address for StoryRoots.', { exact: true })).toBeVisible();
 });
 
 test('email step stays clear and usable on a phone screen', async ({ page }) => {

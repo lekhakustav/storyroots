@@ -5,10 +5,10 @@ import { sendStoryRootsInterestNotification } from '@/lib/storyroots-notificatio
 
 const interestSchema = z.object({ email: z.string().trim().email().max(255) });
 
-function getSupabaseAdmin() {
+function getSupabasePublic() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return url && serviceKey ? createClient(url, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } }) : null;
+  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  return url && publishableKey ? createClient(url, publishableKey, { auth: { autoRefreshToken: false, persistSession: false } }) : null;
 }
 
 export async function POST(request: Request) {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const parsed = interestSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: 'Please enter a valid email.' }, { status: 400 });
 
-  const supabase = getSupabaseAdmin();
+  const supabase = getSupabasePublic();
   let alreadyRegistered = false;
 
   if (supabase) {
@@ -38,5 +38,6 @@ export async function POST(request: Request) {
     alreadyRegistered,
     notificationSent: notification.sent,
     developmentFallback: !notification.sent,
+    storageConnected: Boolean(supabase),
   });
 }
