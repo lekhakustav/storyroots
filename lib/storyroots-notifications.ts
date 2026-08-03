@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 
 const DEFAULT_FROM_EMAIL = 'StoryRoots <onboarding@resend.dev>';
+export const STORYROOTS_NOTIFICATION_EMAIL = 'lekhakutsav@gmail.com';
 
 type NotificationOptions = {
   apiKey?: string;
@@ -40,6 +41,9 @@ export async function sendStoryRootsInterestNotification(
   if (!recipient) {
     return { configured: true, sent: false, error: 'Notification recipient is not configured.' };
   }
+  if (recipient.toLowerCase() !== STORYROOTS_NOTIFICATION_EMAIL) {
+    return { configured: true, sent: false, error: 'Notification recipient is not the StoryRoots inbox.' };
+  }
 
   const sender = envValue(options.from ?? process.env.STORYROOTS_FROM_EMAIL, DEFAULT_FROM_EMAIL);
   const receivedAt = (options.now ?? (() => new Date()))().toISOString();
@@ -55,7 +59,7 @@ export async function sendStoryRootsInterestNotification(
       },
       body: JSON.stringify({
         from: sender,
-        to: [recipient],
+        to: [STORYROOTS_NOTIFICATION_EMAIL],
         subject: 'New StoryRoots signup',
         text: [
           'A visitor wants to try StoryRoots.',

@@ -60,7 +60,7 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
   const [page, setPage] = useState<1 | 2>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [developmentFallback, setDevelopmentFallback] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<InterestFormValues>({ mode: 'onSubmit' });
 
@@ -90,7 +90,7 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
 
       if (!response.ok) throw new Error(data?.error || 'Please try again.');
 
-      setDevelopmentFallback(Boolean(data?.developmentFallback));
+      setAlreadyRegistered(Boolean(data?.alreadyRegistered));
       setPage(2);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Please try again.');
@@ -171,8 +171,14 @@ function InterestFlow({ onClose }: { onClose: () => void }) {
             transition={transition}
           >
             <span className="success-mark" aria-hidden="true"><Check size={26} strokeWidth={1.8} /></span>
-            <h1 ref={headingRef} tabIndex={-1}>You’re on the list.</h1>
-            <p>{developmentFallback ? 'Preview only.' : 'We’ll be in touch.'}</p>
+            <h1 ref={headingRef} tabIndex={-1}>
+              {alreadyRegistered ? "You're already on the list." : 'Thanks - we received your request.'}
+            </h1>
+            <p>
+              {alreadyRegistered
+                ? 'We already have this address for StoryRoots.'
+                : "We'll review this email and get back to you."}
+            </p>
             <button className="cinematic-primary-button form-button" type="button" onClick={onClose}>
               Return <ArrowRight size={18} strokeWidth={1.8} />
             </button>
