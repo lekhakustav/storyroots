@@ -1,0 +1,8 @@
+/* Keep the cinematic StoryRoots intro easy to move through on phones.
+   Desktop keeps the longer, slower pacing; touch layouts get one compact
+   viewport for each story moment instead of asking for seven full screens. */
+@media (max-width: 700px) {
+  .cinematic-scroll-story {
+    min-height: 420svh;
+  }
+}
