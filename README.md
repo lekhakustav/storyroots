@@ -18,7 +18,7 @@ The public experience is intentionally simple: visitors explore the story, choos
 2. Copy `.env.example` to `.env.local` and add the private values you need.
 3. Start the site with `npm run dev`.
 
-The email connection uses `RESEND_API_KEY`, `STORYROOTS_NOTIFICATION_EMAIL`, and `STORYROOTS_FROM_EMAIL`. Never commit `.env.local`.
+The signup connection uses the Supabase URL plus publishable key. Email delivery uses secret `RESEND_API_KEY`, `STORYROOTS_NOTIFICATION_EMAIL=lekhakutsav@gmail.com`, and `STORYROOTS_FROM_EMAIL`. Never commit `.env.local` or a service-role key to public code.
 
 ## Checks
 

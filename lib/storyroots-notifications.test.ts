@@ -17,7 +17,7 @@ describe('StoryRoots interest notifications', () => {
       apiKey: 're_test',
       fetchImpl,
       now: () => new Date('2026-08-01T08:00:00.000Z'),
-      to: 'owner@example.com',
+      to: 'lekhakutsav@gmail.com',
     });
 
     expect(result).toEqual({ configured: true, sent: true, messageId: 'email_123' });
@@ -25,7 +25,7 @@ describe('StoryRoots interest notifications', () => {
 
     const [, request] = fetchImpl.mock.calls[0] as [string, RequestInit];
     const payload = JSON.parse(String(request.body));
-    expect(payload.to).toEqual(['owner@example.com']);
+    expect(payload.to).toEqual(['lekhakutsav@gmail.com']);
     expect(payload.subject).toBe('New StoryRoots signup');
     expect(payload.text).toContain('family@example.com');
     expect(request.headers).toMatchObject({ Authorization: 'Bearer re_test' });
@@ -40,7 +40,7 @@ describe('StoryRoots interest notifications', () => {
     await expect(sendStoryRootsInterestNotification('family@example.com', {
       apiKey: 're_private_key',
       fetchImpl,
-      to: 'owner@example.com',
+      to: 'lekhakutsav@gmail.com',
     })).resolves.toEqual({ configured: true, sent: false, error: 'Sender is not verified.' });
   });
 
@@ -52,6 +52,17 @@ describe('StoryRoots interest notifications', () => {
       configured: true,
       sent: false,
       error: 'Notification recipient is not configured.',
+    });
+  });
+
+  it('refuses to send StoryRoots signups to another recipient', async () => {
+    await expect(sendStoryRootsInterestNotification('family@example.com', {
+      apiKey: 're_test',
+      to: 'someone-else@example.com',
+    })).resolves.toEqual({
+      configured: true,
+      sent: false,
+      error: 'Notification recipient is not the StoryRoots inbox.',
     });
   });
 });

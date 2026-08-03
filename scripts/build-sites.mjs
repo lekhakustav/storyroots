@@ -18,6 +18,7 @@ await cp(publicDir, clientDir, { recursive: true });
 await cp(resolve(nextOutput, 'server', 'app', 'index.html'), resolve(clientDir, 'index.html'));
 await cp(resolve(nextOutput, 'server', 'app', '_not-found.html'), resolve(clientDir, '404.html'));
 await cp(resolve(root, 'worker', 'sites-entry.mjs'), resolve(serverDir, 'index.js'));
+await cp(resolve(root, 'worker', 'storyroots-interest.mjs'), resolve(serverDir, 'storyroots-interest.mjs'));
 
 // Next emits an optimized, hashed copy for imported images. Keep that copy and
 // remove the duplicate source image from the deploy bundle.
