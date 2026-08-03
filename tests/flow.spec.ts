@@ -5,7 +5,7 @@ test('visitor can start StoryRoots with only an email', async ({ page }) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({ ok: true, notificationSent: true, developmentFallback: false }),
+      body: JSON.stringify({ ok: true, alreadyRegistered: false, notificationSent: true }),
     });
   });
 
@@ -21,7 +21,46 @@ test('visitor can start StoryRoots with only an email', async ({ page }) => {
 
   await page.getByLabel('Email').fill('anisha@example.com');
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'You’re on the list.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Thanks - we received your request.' })).toBeVisible();
+  await expect(page.getByText("We'll review this email and get back to you.", { exact: true })).toBeVisible();
+  await expect(page.getByText("You're already on the list.", { exact: true })).not.toBeVisible();
+});
+
+test('an existing StoryRoots address gets duplicate copy', async ({ page }) => {
+  await page.route('**/api/storyroots-interest', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, alreadyRegistered: true, notificationSent: false }),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'I want to try', exact: true }).click();
+  await page.getByLabel('Email').fill('anisha@example.com');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+
+  await expect(page.getByRole('heading', { name: "You're already on the list." })).toBeVisible();
+  await expect(page.getByText('We already have this address for StoryRoots.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Thanks - we received your request.', { exact: true })).not.toBeVisible();
+});
+
+test('a notification failure stays on the email step with retry copy', async ({ page }) => {
+  await page.route('**/api/storyroots-interest', async (route) => {
+    await route.fulfill({
+      status: 502,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: 'We could not send your request just now. Please try again.' }),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'I want to try', exact: true }).click();
+  await page.getByLabel('Email').fill('anisha@example.com');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+
+  await expect(page.getByText('We could not send your request just now. Please try again.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Thanks - we received your request.', { exact: true })).not.toBeVisible();
 });
 
 test('email step stays clear and usable on a phone screen', async ({ page }) => {

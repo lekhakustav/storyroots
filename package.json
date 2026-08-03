@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run lib",
+    "test": "vitest run lib worker",
     "test:e2e": "playwright test",
     "test:smoke": "node scripts/smoke-test.mjs"
   },
