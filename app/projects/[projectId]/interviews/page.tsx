@@ -1,7 +1,2 @@
-import Link from 'next/link';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { notFound } from 'next/navigation';
-import { AppShell } from '@/components/app-shell';
-import { getCurrentUser } from '@/lib/auth';
-import { getProject } from '@/lib/store';
-export default async function InterviewsPage({ params }: { params: Promise<{ projectId: string }> }) { const user = await getCurrentUser(); const { projectId } = await params; const project = getProject(user, projectId); if (!project) notFound(); return <AppShell user={user} title="Interviews"><div className="content"><Link className="muted" href={`/projects/${project.id}`}><ArrowLeft size={16} style={{ verticalAlign: 'middle' }} /> Back to {project.title}</Link><div className="page-heading" style={{ marginTop: 28 }}><div><div className="eyebrow">Conversation sessions</div><h1>Interviews</h1><p className="muted">Short, comfortable conversations build a richer story.</p></div><Link className="button primary" href={`/projects/${project.id}#interview`}><Plus size={16} /> Add session</Link></div><div className="chapter-list">{project.interviews.length ? project.interviews.map((item) => <div className="chapter-row" key={item.id}><div><h3>{item.title}</h3><p>{item.questions.length} questions · {item.recordings.length} recordings · {item.status}</p></div><Link className="button secondary small" href={`/projects/${project.id}/interviews/${item.id}`}>Open room</Link></div>) : <div className="panel"><h2>No interviews yet</h2><p>Create the first session from the project workspace.</p></div>}</div></div></AppShell>; }
+import { redirect } from 'next/navigation';
+export default async function InterviewsPage({ params }: { params: Promise<{ projectId: string }> }) { redirect(`/projects/${(await params).projectId}`); }
