@@ -17,7 +17,7 @@ export function StoryRootsMark() {
   return <span className="storyroots-mark" aria-hidden="true"><TreePine size={27} strokeWidth={1.8} /><BookHeart size={20} strokeWidth={1.8} /></span>;
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children }: { children: React.ReactNode; user?: unknown; title?: string }) {
   const pathname = usePathname();
   const { t } = useI18n();
   const active = (href: string) => href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`) || (href === '/stories' && pathname.startsWith('/projects/'));
