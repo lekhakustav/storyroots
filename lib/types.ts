@@ -1,6 +1,8 @@
 export type ProjectStatus = 'draft' | 'in_progress' | 'complete';
 export type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
 export type ChapterStatus = 'draft' | 'needs_review' | 'approved';
+export type StoryType = 'autobiography' | 'comic' | 'audiobook' | 'diary';
+export type ConversationPhase = 'ready' | 'recording' | 'processing' | 'review' | 'narration';
 
 export type TimelineEvent = {
   id: string;
@@ -62,6 +64,7 @@ export type BiographyProject = {
   storytellerName: string;
   storytellerRelationship: string;
   preferredLanguage: 'en' | 'ne' | 'en-ne';
+  storyType: StoryType;
   status: ProjectStatus;
   coverImageUrl: string | null;
   createdAt: string;
@@ -72,6 +75,20 @@ export type BiographyProject = {
   peopleMentions: PersonMention[];
   chapters: Chapter[];
   exports: ExportJob[];
+  conversationProgress: {
+    phase: ConversationPhase;
+    currentQuestion: number;
+    transcriptText: string;
+    uncertainDetails: string[];
+    savedAt: string;
+  };
+  narration: {
+    status: 'not_generated' | 'generating' | 'ready' | 'fallback' | 'failed';
+    provider: 'elevenlabs' | 'browser' | null;
+    voiceGender: 'female' | 'male' | null;
+    storagePath: string | null;
+    generatedAt: string | null;
+  };
 };
 
 export type ExportJob = { id: string; exportType: 'pdf' | 'epub' | 'audiobook'; status: JobStatus; storagePath: string | null; errorMessage: string | null; createdAt: string; completedAt: string | null };
