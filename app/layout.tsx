@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { LanguageProvider } from '@/components/language-provider';
 import { normalizeLanguage } from '@/lib/i18n';
 import './globals.css';
+import './storyroots-site-mobile.css';
 
 export const metadata: Metadata = {
   title: 'Story Roots',
